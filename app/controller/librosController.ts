@@ -14,7 +14,7 @@ class librosController{
     }
     async crearLibro({request,response}) {
     try {
-        const { titulo, autor, anio_publicacion } = request.body();
+        const {titulo, autor, anio_publicacion,editorial_id} = request.body();
         if (!titulo || typeof titulo !== 'string' || titulo.trim().length === 0) {
             return response.status(400).json({ 
                 error: 'El título es obligatorio y debe ser un texto válido' 
@@ -34,8 +34,7 @@ class librosController{
             });
         }
         const result = await pgDatbase.query(
-            'INSERT INTO libros (titulo, autor, anio_publicacion) VALUES ($1, $2, $3) RETURNING *',
-            [titulo, autor, anio_publicacion]
+            'INSERT INTO libros (titulo, autor, anio_publicacion,editorial_id) VALUES ($1, $2, $3,$4)',[titulo, autor, anio_publicacion,editorial_id]
         );
 
         return response.status(201).json({ 
@@ -52,7 +51,7 @@ class librosController{
   }
     async actualizarLibros({ params, request, response }) {
     try {
-        const { titulo, autor, anio_publicacion } = request.body();
+        const { titulo, autor, anio_publicacion,editorial_id } = request.body();
         const { id } = params;
         if (!titulo || typeof titulo !== 'string' || titulo.trim().length === 0) {
             return response.status(400).json({ 
@@ -71,8 +70,8 @@ class librosController{
             });
         }
         const result = await pgDatbase.query(
-            'UPDATE libros SET titulo = $1, autor = $2, anio_publicacion = $3 WHERE id = $4 RETURNING *',
-            [titulo, autor, anio_publicacion, id]
+            'UPDATE libros SET titulo = $2, autor = $3, anio_publicacion = $4,editorial_id= $5 WHERE id = $1',
+            [id,titulo, autor, anio_publicacion,editorial_id]
         );
         if (result.rowCount === 0) {
             return response.status(404).json({ 

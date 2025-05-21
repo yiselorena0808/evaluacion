@@ -14,7 +14,7 @@ class editorialesController{
     }
     async crearEditoriales({request,response}){
         const {nombre,pais}= request.body()
-        const result= await pgDatbase.query('INSERT INTO libros (nombre,pais) VALUES ($2,$3)',[nombre,pais])
+        const result= await pgDatbase.query('INSERT INTO editoriales (nombre,pais) VALUES ($1,$2)',[nombre,pais])
         console.log(result)
         return response.json({mensaje:'la editorial a sido creada',nombre,pais})
     }
@@ -31,6 +31,7 @@ class editorialesController{
         console.log(result)
         return response.json({mensaje:`la editorial de id ${id} se ha eliminado`})
     }
+    
     async listarlibrosEditorial({params,request,response}){
         const id= params.id
         const result= await pgDatbase.query('SELECT * FROM libros WHERE editorial_id = $1',[id])
